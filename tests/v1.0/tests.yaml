@@ -1,0 +1,25 @@
+url: ""
+functions:
+- type: knative-workflow
+  id: pandoc
+  image: gcr.io/direktiv/functions/pandoc:test
+states:
+- id: state0
+  type: action
+  action:
+    function: pandoc
+    input:
+      commands:
+      - command: Example of running pandoc
+  transition: state1
+- id: state1
+  type: action
+  action:
+    function: pandoc
+    input:
+      commands:
+      - command: Example of running pandoc
+      files:
+      - data: Hello World
+        mode: "0755"
+        name: hello.txt
