@@ -145,23 +145,24 @@ func init() {
           "cmds": [
             {
               "action": "exec",
-              "exec": "ls -la",
+              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
               "print": true,
               "silent": true
             },
             {
               "action": "exec",
-              "continue": true,
-              "exec": "cat in.html"
+              "exec": "{{- if .Return }}\nbase64 -w 0 direktiv.bin\n{{- else }}\necho \"no\"\n{{- end }}",
+              "print": false,
+              "silent": true
             },
             {
               "action": "exec",
-              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
-              "print": true,
-              "silent": false
+              "exec": "{{- if .Output }}\nmv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}\n{{- else }}\necho \"\"\n{{- end }}  ",
+              "print": false,
+              "silent": true
             }
           ],
-          "output": "{\n  \"pandoc\": {{ (index . 0).result | toJson }}\n}\n"
+          "output": "{\n  \"pandoc\": {{ (index . 1).result | toJson }}\n}\n"
         },
         "x-direktiv-errors": {
           "io.direktiv.command.error": "Command execution failed",
@@ -310,23 +311,24 @@ func init() {
           "cmds": [
             {
               "action": "exec",
-              "exec": "ls -la",
+              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
               "print": true,
               "silent": true
             },
             {
               "action": "exec",
-              "continue": true,
-              "exec": "cat in.html"
+              "exec": "{{- if .Return }}\nbase64 -w 0 direktiv.bin\n{{- else }}\necho \"no\"\n{{- end }}",
+              "print": false,
+              "silent": true
             },
             {
               "action": "exec",
-              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
-              "print": true,
-              "silent": false
+              "exec": "{{- if .Output }}\nmv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}\n{{- else }}\necho \"\"\n{{- end }}  ",
+              "print": false,
+              "silent": true
             }
           ],
-          "output": "{\n  \"pandoc\": {{ (index . 0).result | toJson }}\n}\n"
+          "output": "{\n  \"pandoc\": {{ (index . 1).result | toJson }}\n}\n"
         },
         "x-direktiv-errors": {
           "io.direktiv.command.error": "Command execution failed",

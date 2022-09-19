@@ -113,42 +113,30 @@ paths:
       x-direktiv:  
         cmds:
         - action: exec
-          exec: ls -la
-          # exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
+          exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
           silent: true
           print: true
         - action: exec
-          exec: cat in.html
-          continue: true
+          exec: |-
+            {{- if .Return }}
+            base64 -w 0 direktiv.bin
+            {{- else }}
+            echo "no"
+            {{- end }}
+          silent: true
+          print: false
         - action: exec
-          exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
-          silent: false
-          print: true
-        # - action: exec
-        #   exec: |-
-        #     {{- if .Return }}
-        #     base64 -w 0 direktiv.bin
-        #     {{- else }}
-        #     echo "no"
-        #     {{- end }}
-        #   silent: true
-        #   print: false
-        # - action: exec
-        #   exec: |-
-        #     {{- if .Output }}
-        #     mv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}
-        #     {{- else }}
-        #     echo ""
-        #     {{- end }}  
-        #   print: false
-        #   silent: true
-        # output: |
-        #   {
-        #     "pandoc": {{ (index . 1).result | toJson }}
-        #   }
+          exec: |-
+            {{- if .Output }}
+            mv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}
+            {{- else }}
+            echo ""
+            {{- end }}  
+          print: false
+          silent: true
         output: |
           {
-            "pandoc": {{ (index . 0).result | toJson }}
+            "pandoc": {{ (index . 1).result | toJson }}
           }
       x-direktiv-errors:
         io.direktiv.command.error: Command execution failed
