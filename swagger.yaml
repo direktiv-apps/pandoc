@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: Run pandoc in Direktiv
+  description: Pandoc can convert between documents between various formats. 
   title: pandoc
   version: "1.0"
   x-direktiv-meta:
@@ -10,11 +10,14 @@ info:
     issues: https://github.com/direktiv-apps/pandoc/issues
     url: https://github.com/direktiv-apps/pandoc  
     categories:
-    - unknown
+    - misc
+    - docs
     license: |-
       [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)
     long-description: >-
-      Run pandoc in Direktiv as a function
+      Pandoc is a document converter. It can convert from various formats like markup, HTML etc. into other formats like PDF or HTML. 
+      All supported formats can be found on the pandoc website: [Docs](https://pandoc.org/MANUAL.html#options). This function can return
+      the converted document as Base64 encoded file or can be stored in a scoped variable in Direktiv. 
 consumes:
 - application/json
 produces:
@@ -74,65 +77,39 @@ paths:
                     type: string
               return:
                 type: boolean
-
-              # files:
-              #   type: array
-              #   items:
-              #     $ref: '#/definitions/direktivFile'
-              #   description: File to create before running commands.
-              #   default: []
-              # commands:
-              #   type: array
-              #   description: Array of commands.
-              #   items:
-              #     type: object
-              #     properties:
-              #       command:
-              #         type: string
-              #         description: Command to run
-              #       silent: 
-              #         type: boolean
-              #         description: If set to false the command will not print output to logs.
-              #         default: false
-              #       print: 
-              #         type: boolean
-              #         description: If set to false the command will not print the full command with arguments to logs.
-              #         default: true
-              #       continue: 
-              #         type: boolean
-              #         description: Stops excecution if command fails, otherwise proceeds with next command 
-              #   default: 
-              #   - command: echo Hello
-      # direktiv code generation is configured here
       x-direktiv-function: |-
         functions:
         - id: pandoc
           image: gcr.io/direktiv/functions/pandoc:1.0
           type: knative-workflow
       x-direktiv-examples:
-        # ADD MORE EXAMPLES HERE
         - title: Basic
           content: |-
             - id: pandoc
               type: action
+              files: 
+              - key: in.html
+                scope: workflow
               action:
                 function: pandoc
                 input: 
-                  commands:
-                  - command: Example of running pandoc
-        - title: Advanced
+                  from: html
+                  to: pdf
+                  input: in.html
+        - title: Base64 return value
           content: |-
             - id: pandoc
               type: action
               action:
                 function: pandoc
+                files: 
+                - key: in.html
+                  scope: workflow
                 input: 
-                  files:
-                  - name: hello.txt
-                    data: Hello World
-                    mode: '0755'
-                  commands:
-                  - command: Example of running pandoc
+                  from: html
+                  to: pdf
+                  input: in.html
+                  return: true
       x-direktiv:  
         cmds:
         - action: exec

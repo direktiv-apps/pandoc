@@ -29,17 +29,18 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Run pandoc in Direktiv",
+    "description": "Pandoc can convert between documents between various formats.",
     "title": "pandoc",
     "version": "1.0",
     "x-direktiv-meta": {
       "categories": [
-        "unknown"
+        "misc",
+        "docs"
       ],
       "container": "gcr.io/direktiv/functions/pandoc",
       "issues": "https://github.com/direktiv-apps/pandoc/issues",
       "license": "[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)",
-      "long-description": "Run pandoc in Direktiv as a function",
+      "long-description": "Pandoc is a document converter. It can convert from various formats like markup, HTML etc. into other formats like PDF or HTML.  All supported formats can be found on the pandoc website: [Docs](https://pandoc.org/MANUAL.html#options). This function can return the converted document as Base64 encoded file or can be stored in a scoped variable in Direktiv. ",
       "maintainer": "[direktiv.io](https://www.direktiv.io) ",
       "url": "https://github.com/direktiv-apps/pandoc"
     }
@@ -170,12 +171,12 @@ func init() {
         },
         "x-direktiv-examples": [
           {
-            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    input: \n      commands:\n      - command: Example of running pandoc",
+            "content": "- id: pandoc\n  type: action\n  files: \n  - key: in.html\n    scope: workflow\n  action:\n    function: pandoc\n    input: \n      from: html\n      to: pdf\n      input: in.html",
             "title": "Basic"
           },
           {
-            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    input: \n      files:\n      - name: hello.txt\n        data: Hello World\n        mode: '0755'\n      commands:\n      - command: Example of running pandoc",
-            "title": "Advanced"
+            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    files: \n    - key: in.html\n      scope: workflow\n    input: \n      from: html\n      to: pdf\n      input: in.html\n      return: true",
+            "title": "Base64 return value"
           }
         ],
         "x-direktiv-function": "functions:\n- id: pandoc\n  image: gcr.io/direktiv/functions/pandoc:1.0\n  type: knative-workflow"
@@ -239,17 +240,18 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Run pandoc in Direktiv",
+    "description": "Pandoc can convert between documents between various formats.",
     "title": "pandoc",
     "version": "1.0",
     "x-direktiv-meta": {
       "categories": [
-        "unknown"
+        "misc",
+        "docs"
       ],
       "container": "gcr.io/direktiv/functions/pandoc",
       "issues": "https://github.com/direktiv-apps/pandoc/issues",
       "license": "[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)",
-      "long-description": "Run pandoc in Direktiv as a function",
+      "long-description": "Pandoc is a document converter. It can convert from various formats like markup, HTML etc. into other formats like PDF or HTML.  All supported formats can be found on the pandoc website: [Docs](https://pandoc.org/MANUAL.html#options). This function can return the converted document as Base64 encoded file or can be stored in a scoped variable in Direktiv. ",
       "maintainer": "[direktiv.io](https://www.direktiv.io) ",
       "url": "https://github.com/direktiv-apps/pandoc"
     }
@@ -335,12 +337,12 @@ func init() {
         },
         "x-direktiv-examples": [
           {
-            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    input: \n      commands:\n      - command: Example of running pandoc",
+            "content": "- id: pandoc\n  type: action\n  files: \n  - key: in.html\n    scope: workflow\n  action:\n    function: pandoc\n    input: \n      from: html\n      to: pdf\n      input: in.html",
             "title": "Basic"
           },
           {
-            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    input: \n      files:\n      - name: hello.txt\n        data: Hello World\n        mode: '0755'\n      commands:\n      - command: Example of running pandoc",
-            "title": "Advanced"
+            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    files: \n    - key: in.html\n      scope: workflow\n    input: \n      from: html\n      to: pdf\n      input: in.html\n      return: true",
+            "title": "Base64 return value"
           }
         ],
         "x-direktiv-function": "functions:\n- id: pandoc\n  image: gcr.io/direktiv/functions/pandoc:1.0\n  type: knative-workflow"

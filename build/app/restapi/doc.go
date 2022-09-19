@@ -2,7 +2,7 @@
 
 // Package restapi pandoc
 //
-//  Run pandoc in Direktiv
+//  Pandoc can convert between documents between various formats.
 //  Schemes:
 //    http
 //  Host: localhost

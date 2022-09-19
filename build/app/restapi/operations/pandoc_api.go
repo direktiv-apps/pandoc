@@ -51,7 +51,7 @@ func NewPandocAPI(spec *loads.Document) *PandocAPI {
 	}
 }
 
-/*PandocAPI Run pandoc in Direktiv */
+/*PandocAPI Pandoc can convert between documents between various formats. */
 type PandocAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context
