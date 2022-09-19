@@ -12,6 +12,9 @@ states:
       from: html
       input: in.html
       to: pdf
+    files:
+    - key: in.html
+      scope: workflow
   transition: state1
 - id: state1
   type: action
