@@ -28,11 +28,11 @@ functions:
 ```yaml
 - id: pandoc
   type: action
-  files: 
-  - key: in.html
-    scope: workflow
   action:
     function: pandoc
+    files: 
+    - key: in.html
+      scope: workflow
     input: 
       from: html
       to: pdf

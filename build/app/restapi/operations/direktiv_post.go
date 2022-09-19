@@ -118,7 +118,7 @@ func PostDirektivHandle(params PostParams) middleware.Responder {
 	// if foreach returns an error there is no continue
 	//
 	// default we do not continue
-	cont = convertTemplateToBool("<no value>", accParams, false)
+	cont = convertTemplateToBool("true", accParams, false)
 	// cont = convertTemplateToBool("<no value>", accParams, true)
 	//
 
@@ -174,7 +174,7 @@ func PostDirektivHandle(params PostParams) middleware.Responder {
 	accParams.Commands = paramsCollector
 
 	s, err := templateString(`{
-  "pandoc": {{ (index . 1).result | toJson }}
+  "pandoc": {{ (index . 0).result | toJson }}
 }
 `, responses)
 	if err != nil {
@@ -207,7 +207,7 @@ func runCommand0(ctx context.Context,
 		params.DirektivDir,
 	}
 
-	cmd, err := templateString(`pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}`, at)
+	cmd, err := templateString(`ls -la`, at)
 	if err != nil {
 		ri.Logger().Infof("error executing command: %v", err)
 		ir[resultKey] = err.Error()
@@ -240,11 +240,7 @@ func runCommand1(ctx context.Context,
 		params.DirektivDir,
 	}
 
-	cmd, err := templateString(`{{- if .Return }}
-base64 -w 0 direktiv.bin
-{{- else }}
-echo "no"
-{{- end }}`, at)
+	cmd, err := templateString(`cat in.html`, at)
 	if err != nil {
 		ri.Logger().Infof("error executing command: %v", err)
 		ir[resultKey] = err.Error()
@@ -252,8 +248,8 @@ echo "no"
 	}
 	cmd = strings.Replace(cmd, "\n", "", -1)
 
-	silent := convertTemplateToBool("true", at, false)
-	print := convertTemplateToBool("false", at, true)
+	silent := convertTemplateToBool("<no value>", at, false)
+	print := convertTemplateToBool("<no value>", at, true)
 	output := ""
 
 	envs := []string{}
@@ -277,11 +273,7 @@ func runCommand2(ctx context.Context,
 		params.DirektivDir,
 	}
 
-	cmd, err := templateString(`{{- if .Output }}
-mv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}
-{{- else }}
-echo ""
-{{- end }}  `, at)
+	cmd, err := templateString(`pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}`, at)
 	if err != nil {
 		ri.Logger().Infof("error executing command: %v", err)
 		ir[resultKey] = err.Error()
@@ -289,8 +281,8 @@ echo ""
 	}
 	cmd = strings.Replace(cmd, "\n", "", -1)
 
-	silent := convertTemplateToBool("true", at, false)
-	print := convertTemplateToBool("false", at, true)
+	silent := convertTemplateToBool("false", at, false)
+	print := convertTemplateToBool("true", at, true)
 	output := ""
 
 	envs := []string{}

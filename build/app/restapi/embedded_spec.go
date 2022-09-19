@@ -145,24 +145,23 @@ func init() {
           "cmds": [
             {
               "action": "exec",
-              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
+              "exec": "ls -la",
               "print": true,
               "silent": true
             },
             {
               "action": "exec",
-              "exec": "{{- if .Return }}\nbase64 -w 0 direktiv.bin\n{{- else }}\necho \"no\"\n{{- end }}",
-              "print": false,
-              "silent": true
+              "continue": true,
+              "exec": "cat in.html"
             },
             {
               "action": "exec",
-              "exec": "{{- if .Output }}\nmv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}\n{{- else }}\necho \"\"\n{{- end }}  ",
-              "print": false,
-              "silent": true
+              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
+              "print": true,
+              "silent": false
             }
           ],
-          "output": "{\n  \"pandoc\": {{ (index . 1).result | toJson }}\n}\n"
+          "output": "{\n  \"pandoc\": {{ (index . 0).result | toJson }}\n}\n"
         },
         "x-direktiv-errors": {
           "io.direktiv.command.error": "Command execution failed",
@@ -171,7 +170,7 @@ func init() {
         },
         "x-direktiv-examples": [
           {
-            "content": "- id: pandoc\n  type: action\n  files: \n  - key: in.html\n    scope: workflow\n  action:\n    function: pandoc\n    input: \n      from: html\n      to: pdf\n      input: in.html",
+            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    files: \n    - key: in.html\n      scope: workflow\n    input: \n      from: html\n      to: pdf\n      input: in.html",
             "title": "Basic"
           },
           {
@@ -311,24 +310,23 @@ func init() {
           "cmds": [
             {
               "action": "exec",
-              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
+              "exec": "ls -la",
               "print": true,
               "silent": true
             },
             {
               "action": "exec",
-              "exec": "{{- if .Return }}\nbase64 -w 0 direktiv.bin\n{{- else }}\necho \"no\"\n{{- end }}",
-              "print": false,
-              "silent": true
+              "continue": true,
+              "exec": "cat in.html"
             },
             {
               "action": "exec",
-              "exec": "{{- if .Output }}\nmv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}\n{{- else }}\necho \"\"\n{{- end }}  ",
-              "print": false,
-              "silent": true
+              "exec": "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}",
+              "print": true,
+              "silent": false
             }
           ],
-          "output": "{\n  \"pandoc\": {{ (index . 1).result | toJson }}\n}\n"
+          "output": "{\n  \"pandoc\": {{ (index . 0).result | toJson }}\n}\n"
         },
         "x-direktiv-errors": {
           "io.direktiv.command.error": "Command execution failed",
@@ -337,7 +335,7 @@ func init() {
         },
         "x-direktiv-examples": [
           {
-            "content": "- id: pandoc\n  type: action\n  files: \n  - key: in.html\n    scope: workflow\n  action:\n    function: pandoc\n    input: \n      from: html\n      to: pdf\n      input: in.html",
+            "content": "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n    files: \n    - key: in.html\n      scope: workflow\n    input: \n      from: html\n      to: pdf\n      input: in.html",
             "title": "Basic"
           },
           {

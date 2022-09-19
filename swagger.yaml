@@ -87,11 +87,11 @@ paths:
           content: |-
             - id: pandoc
               type: action
-              files: 
-              - key: in.html
-                scope: workflow
               action:
                 function: pandoc
+                files: 
+                - key: in.html
+                  scope: workflow
                 input: 
                   from: html
                   to: pdf
@@ -113,30 +113,42 @@ paths:
       x-direktiv:  
         cmds:
         - action: exec
-          exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
+          exec: ls -la
+          # exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
           silent: true
           print: true
         - action: exec
-          exec: |-
-            {{- if .Return }}
-            base64 -w 0 direktiv.bin
-            {{- else }}
-            echo "no"
-            {{- end }}
-          silent: true
-          print: false
+          exec: cat in.html
+          continue: true
         - action: exec
-          exec: |-
-            {{- if .Output }}
-            mv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}
-            {{- else }}
-            echo ""
-            {{- end }}  
-          print: false
-          silent: true
+          exec: pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}
+          silent: false
+          print: true
+        # - action: exec
+        #   exec: |-
+        #     {{- if .Return }}
+        #     base64 -w 0 direktiv.bin
+        #     {{- else }}
+        #     echo "no"
+        #     {{- end }}
+        #   silent: true
+        #   print: false
+        # - action: exec
+        #   exec: |-
+        #     {{- if .Output }}
+        #     mv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name }}
+        #     {{- else }}
+        #     echo ""
+        #     {{- end }}  
+        #   print: false
+        #   silent: true
+        # output: |
+        #   {
+        #     "pandoc": {{ (index . 1).result | toJson }}
+        #   }
         output: |
           {
-            "pandoc": {{ (index . 1).result | toJson }}
+            "pandoc": {{ (index . 0).result | toJson }}
           }
       x-direktiv-errors:
         io.direktiv.command.error: Command execution failed
