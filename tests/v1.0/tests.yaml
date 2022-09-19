@@ -9,17 +9,19 @@ states:
   action:
     function: pandoc
     input:
-      commands:
-      - command: Example of running pandoc
+      from: html
+      input: in.html
+      to: pdf
   transition: state1
 - id: state1
   type: action
   action:
     function: pandoc
     input:
-      commands:
-      - command: Example of running pandoc
-      files:
-      - data: Hello World
-        mode: "0755"
-        name: hello.txt
+      from: html
+      input: in.html
+      return: true
+      to: pdf
+    files:
+    - key: in.html
+      scope: workflow
