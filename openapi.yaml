@@ -1,0 +1,163 @@
+openapi: 3.0.1
+info:
+  title: pandoc
+  description: Pandoc can convert between documents between various formats.
+  version: "1.0"
+  x-direktiv-meta:
+    container: gcr.io/direktiv/functions/pandoc
+    maintainer: "[direktiv.io](https://www.direktiv.io) "
+    issues: https://github.com/direktiv-apps/pandoc/issues
+    url: https://github.com/direktiv-apps/pandoc
+    categories:
+    - misc
+    - docs
+    license: "[Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)"
+    long-description: "Pandoc is a document converter. It can convert from various\
+      \ formats like markup, HTML etc. into other formats like PDF or HTML.  All supported\
+      \ formats can be found on the pandoc website: [Docs](https://pandoc.org/MANUAL.html#options).\
+      \ This function can return the converted document as Base64 encoded file or\
+      \ can be stored in a scoped variable in Direktiv. "
+servers:
+- url: /
+paths:
+  /:
+    post:
+      parameters:
+      - name: Direktiv-ActionID
+        in: header
+        description: "direktiv action id is an UUID. \nFor development it can be set\
+          \ to 'development'\n"
+        schema:
+          type: string
+          default: development
+      - name: Direktiv-TempDir
+        in: header
+        description: |
+          direktiv temp dir is the working directory for that request
+          For development it can be set to e.g. '/tmp'
+        schema:
+          type: string
+          default: /tmp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - from
+              - input
+              - to
+              type: object
+              properties:
+                from:
+                  type: string
+                to:
+                  type: string
+                input:
+                  type: string
+                output:
+                  required:
+                  - name
+                  - scope
+                  type: object
+                  properties:
+                    scope:
+                      type: string
+                      enum:
+                      - workflow
+                      - instance
+                      - namespace
+                    name:
+                      type: string
+                return:
+                  type: boolean
+        required: false
+      responses:
+        "200":
+          description: List of executed commands.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pandoc:
+                    type: string
+                additionalProperties:
+                  type: object
+            pandoc:
+              example: JVBERi0xLjUKJdDUxdgKNSAwIG9iago8PAov==
+        default:
+          description: generic error response
+          headers:
+            Direktiv-ErrorMessage:
+              schema:
+                type: string
+            Direktiv-ErrorCode:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+      x-direktiv-function: |-
+        functions:
+        - id: pandoc
+          image: gcr.io/direktiv/functions/pandoc:1.0
+          type: knative-workflow
+      x-direktiv-examples:
+      - title: Basic
+        content: "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n\
+          \    files: \n    - key: in.html\n      scope: workflow\n    input: \n \
+          \     from: html\n      to: pdf\n      input: in.html"
+      - title: Base64 return value
+        content: "- id: pandoc\n  type: action\n  action:\n    function: pandoc\n\
+          \    files: \n    - key: in.html\n      scope: workflow\n    input: \n \
+          \     from: html\n      to: pdf\n      input: in.html\n      return: true"
+      x-direktiv:
+        cmds:
+        - action: exec
+          exec: "pandoc -o direktiv.bin -f {{ .From }} -t {{ .To }} {{ .Input }}"
+          silent: true
+          print: true
+        - action: exec
+          exec: |-
+            {{- if .Return }}
+            base64 -w 0 direktiv.bin
+            {{- else }}
+            echo "no"
+            {{- end }}
+          silent: true
+          print: false
+        - action: exec
+          exec: "{{- if .Output }}\nmv direktiv.bin out/{{ .Output.Scope }}/{{ .Output.Name\
+            \ }}\n{{- else }}\necho \"\"\n{{- end }}  "
+          print: false
+          silent: true
+        output: |
+          {
+            "pandoc": {{ (index . 1).result | toJson }}
+          }
+      x-direktiv-errors:
+        io.direktiv.command.error: Command execution failed
+        io.direktiv.output.error: Template error for output generation of the service
+        io.direktiv.ri.error: Can not create information object from request
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    direktivFile:
+      type: object
+      x-go-type:
+        type: DirektivFile
+        import:
+          package: github.com/direktiv/apps/go/pkg/apps
+    error:
+      required:
+      - errorCode
+      - errorMessage
+      type: object
+      properties:
+        errorCode:
+          type: string
+        errorMessage:
+          type: string
+x-original-swagger-version: "2.0"
+
